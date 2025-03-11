@@ -1,0 +1,3 @@
+[submodule "rqcpp_compiler"]
+	path = rqcpp_compiler
+	url = https://github.com/zkz17/rqcpp_compiler.git
