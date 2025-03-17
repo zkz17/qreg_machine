@@ -2,8 +2,27 @@ import sys
 
 help_info = \
 '''
-Usage: python qreg_machine.py <option> <arg>
+Usage: python main.py <option> <arg>
 '''
+
+def decode(text, compress=True):
+    decoder = None
+    if compress:
+        from decoder.decoder import CompressedDecoder
+        decoder = CompressedDecoder()
+    else:
+        from decoder.decoder import GenericDecoder
+        decoder = GenericDecoder()
+
+    code = decoder.decode(text)
+
+    return code
+
+def execute(text):
+    code = decode(text)
+    code.print()
+
+    ## TODO
 
 def main():
     args = sys.argv
@@ -41,6 +60,7 @@ def main():
             from rqcpp_compiler.rqcpp import compile
             code = compile(text, False)
             code.print()
+            code.write(output_path)
         elif option == "execute":
             if len(args) == 2:
                 raise Exception(r'Input file path missing. ')
@@ -50,8 +70,11 @@ def main():
                 raise Exception(r'Unexpected input file format! Expected: *.rqcpp, Received: ' + input_path)
             
             f = open(input_path, mode='r')
-            text = f.read()
+            text = f.readlines()
             f.close()
+
+            ## TODO
+            execute(text)
 
 if __name__ == "__main__":
     main()
