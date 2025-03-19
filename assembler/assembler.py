@@ -2,17 +2,17 @@ from utils.machine_code import MachineCode, MachineCodeList
 from abc import ABC, abstractmethod
 import re
 
-# QINS Decoder abstract class
-class Decoder(ABC):
+# QINS Assembler abstract class
+class Assembler(ABC):
     def __init__(self):
         pass
 
     @abstractmethod
-    def decode(self, inst):
+    def assemble(self, inst):
         pass
 
-# Compressed Decoder class
-class CompressedDecoder(Decoder):
+# Compressed Assembler class
+class CompressedAssembler(Assembler):
     optype = {
         'i': ['ld', 'xori', 'addi', 'subi', 'bra', 'bez', 'bnz'],
         'r': ['ldr', 'fetr', 'swap', 'add', 'sub', 'neg', 'swbr', 'qif', 'fiq', 'start', 'finish'],
@@ -38,94 +38,94 @@ class CompressedDecoder(Decoder):
     def __init__(self):
         pass
 
-    def decode(self, text):
+    def assemble(self, text):
         codelist = MachineCodeList()
         for line in text:
             lst = re.split("\(|, |\)", line.rstrip(")\n"))
             op, args = lst[0], lst[1:]
-            for type, oplist in CompressedDecoder.optype.items():
+            for type, oplist in CompressedAssembler.optype.items():
                 if op in oplist:
-                    method_name = f'decode_optype_{type}'
-                    method = getattr(self, method_name, self.decode_optype_default)
+                    method_name = f'assemble_optype_{type}'
+                    method = getattr(self, method_name, self.assemble_optype_default)
                     codelist.append(method(op, args))
         return codelist
 
-    def decode_optype_i(self, op, args):
+    def assemble_optype_i(self, op, args):
         code = MachineCode()
         
         code.set_opcode(0)
-        code.set_opcode_i(CompressedDecoder.opcode_i[op])
+        code.set_opcode_i(CompressedAssembler.opcode_i[op])
         if op == 'bra': 
             code.set_imm(int(args[0]))
         else: 
-            code.set_reg(CompressedDecoder.reg2int[args[0]])
+            code.set_reg(CompressedAssembler.reg2int[args[0]])
             code.set_imm(int(args[1]))
 
         return code
 
-    def decode_optype_r(self, op, args):
+    def assemble_optype_r(self, op, args):
         code = MachineCode()
 
         code.set_opcode(2)
-        code.set_opcode_r(CompressedDecoder.opcode_r[op])
+        code.set_opcode_r(CompressedAssembler.opcode_r[op])
         if op in ['start', 'finish', 'qif', 'fiq']:
             pass
         elif op in ['swbr', 'neg']:
-            code.set_reg1(CompressedDecoder.reg2int[args[0]])
+            code.set_reg1(CompressedAssembler.reg2int[args[0]])
         else:
-            code.set_reg1(CompressedDecoder.reg2int[args[0]])
-            code.set_reg2(CompressedDecoder.reg2int[args[1]])
+            code.set_reg1(CompressedAssembler.reg2int[args[0]])
+            code.set_reg2(CompressedAssembler.reg2int[args[1]])
 
         return code
 
-    def decode_optype_uni(self, op, args):
+    def assemble_optype_uni(self, op, args):
         code = MachineCode()
 
         code.set_opcode(1)
-        code.set_gate_1(CompressedDecoder.gate_1[args[0]])
+        code.set_gate_1(CompressedAssembler.gate_1[args[0]])
         if op in ['Rx', 'Ry', 'Rz', "GPhase"]:
             code.set_imm(int(args[1]))
 
         return code
 
-    def decode_optype_unib(self, op, args):
+    def assemble_optype_unib(self, op, args):
         code = MachineCode()
 
         code.set_opcode(2)
-        code.set_gate_2(CompressedDecoder.gate_2[args[0]])
-        code.set_reg1(CompressedDecoder.reg2int[args[1]])
-        code.set_reg2(CompressedDecoder.reg2int[args[2]])
+        code.set_gate_2(CompressedAssembler.gate_2[args[0]])
+        code.set_reg1(CompressedAssembler.reg2int[args[1]])
+        code.set_reg2(CompressedAssembler.reg2int[args[2]])
 
         return code
 
-    def decode_optype_ari(self, op, args):
+    def assemble_optype_ari(self, op, args):
         code = MachineCode()
 
         code.set_opcode(2)
-        code.set_op_1(CompressedDecoder.op_1[args[0]])
-        code.set_reg1(CompressedDecoder.reg2int[args[1]])
-        code.set_reg2(CompressedDecoder.reg2int[args[2]])
+        code.set_op_1(CompressedAssembler.op_1[args[0]])
+        code.set_reg1(CompressedAssembler.reg2int[args[1]])
+        code.set_reg2(CompressedAssembler.reg2int[args[2]])
 
         return code
 
-    def decode_optype_arib(self, op, args):
+    def assemble_optype_arib(self, op, args):
         code = MachineCode()
 
         code.set_opcode(3)
-        code.set_op_2(CompressedDecoder.op_2[args[0]])
-        code.set_reg1(CompressedDecoder.reg2int[args[1]])
-        code.set_reg2(CompressedDecoder.reg2int[args[2]])
-        code.set_reg3(CompressedDecoder.reg2int[args[3]])
+        code.set_op_2(CompressedAssembler.op_2[args[0]])
+        code.set_reg1(CompressedAssembler.reg2int[args[1]])
+        code.set_reg2(CompressedAssembler.reg2int[args[2]])
+        code.set_reg3(CompressedAssembler.reg2int[args[3]])
         
         return code
 
-    def decode_optype_default(self, op, args):
+    def assemble_optype_default(self, op, args):
         raise Exception(f'Unrecognized instruction type {op}')
 
-# Generic Decoder class
-class GenericDecoder(Decoder):
+# Generic Assembler class
+class GenericAssembler(Assembler):
     def __init__(self):
         pass
 
-    def decode(self, inst):
+    def assemble(self, inst):
         pass

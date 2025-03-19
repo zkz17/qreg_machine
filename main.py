@@ -5,21 +5,21 @@ help_info = \
 Usage: python main.py <option> <arg>
 '''
 
-def decode(text, compress=True):
-    decoder = None
+def assemble(text, compress=True):
+    assembler = None
     if compress:
-        from decoder.decoder import CompressedDecoder
-        decoder = CompressedDecoder()
+        from assembler.assembler import CompressedAssembler
+        assembler = CompressedAssembler()
     else:
-        from decoder.decoder import GenericDecoder
-        decoder = GenericDecoder()
+        from assembler.assembler import GenericAssembler
+        assembler = GenericAssembler()
 
-    code = decoder.decode(text)
+    code = assembler.assemble(text)
 
     return code
 
 def execute(text):
-    code = decode(text)
+    code = assemble(text)
     code.print()
 
     ## TODO
