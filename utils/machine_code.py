@@ -2,7 +2,7 @@ from bitarray import bitarray, util
 
 # Machine Code class
 class MachineCode:
-    def __init__(self, code_length=19):
+    def __init__(self, code_length=20):
         self.code = bitarray(code_length)
 
     def set_opcode(self, opcode):
@@ -39,7 +39,7 @@ class MachineCode:
         self.code[15:19] = util.int2ba(reg, length=4)
 
     def set_imm(self, imm):
-        self.code[10:] = util.int2ba(imm, length=9)
+        self.code[10:] = util.int2ba(imm, length=10)
 
     def print(self):
         print(self.code)
