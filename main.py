@@ -14,14 +14,23 @@ def assemble(text, compress=True):
         from assembler.assembler import GenericAssembler
         assembler = GenericAssembler()
 
-    code = assembler.assemble(text)
+    codelist = assembler.assemble(text)
 
-    return code
+    return codelist
+
+def synthesize(codelist):
+    from oracle_synthesizer.default_synthesizer import DefaultSynthesizer
+
+    synthesizer = DefaultSynthesizer()
+    return synthesizer.synthesize(codelist)
 
 def execute(text):
-    code = assemble(text)
-    code.print()
+    codelist = assemble(text)
+    codelist.print()
 
+    oracle = synthesize(codelist)
+    #with open('circuit.txt', 'w', encoding='utf-8') as f:
+    #    f.write(oracle.draw(output='text').single_string())
     ## TODO
 
 def main():

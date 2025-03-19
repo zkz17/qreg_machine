@@ -42,7 +42,7 @@ class MachineCode:
         self.code[10:] = util.int2ba(imm, length=10)
 
     def print(self):
-        print(self.code)
+        print(self.code.to01())
 
 # Machine Code List class
 class MachineCodeList:
