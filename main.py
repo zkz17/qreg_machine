@@ -5,34 +5,6 @@ help_info = \
 Usage: python main.py <option> <arg>
 '''
 
-def assemble(text, compress=True):
-    assembler = None
-    if compress:
-        from assembler.assembler import CompressedAssembler
-        assembler = CompressedAssembler()
-    else:
-        from assembler.assembler import GenericAssembler
-        assembler = GenericAssembler()
-
-    codelist = assembler.assemble(text)
-
-    return codelist
-
-def synthesize(codelist):
-    from oracle_synthesizer.default_synthesizer import DefaultSynthesizer
-
-    synthesizer = DefaultSynthesizer()
-    return synthesizer.synthesize(codelist)
-
-def execute(text):
-    codelist = assemble(text)
-    codelist.print()
-
-    oracle = synthesize(codelist)
-    #with open('circuit.txt', 'w', encoding='utf-8') as f:
-    #    f.write(oracle.draw(output='text').single_string())
-    ## TODO
-
 def main():
     args = sys.argv
 
@@ -82,8 +54,9 @@ def main():
             text = f.readlines()
             f.close()
 
-            ## TODO
-            execute(text)
+            from qreg_machine import QRegMachine
+            qreg_machine = QRegMachine()
+            qreg_machine.execute(text)
 
 if __name__ == "__main__":
     main()
