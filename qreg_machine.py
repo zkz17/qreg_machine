@@ -4,7 +4,7 @@ class QRegMachine:
         pass
 
     def execute(self, text):
-        self.partial_evaluation(text)
+        self.partial_evaluate(text)
 
         codelist = self.assemble(text)
         codelist.print()
@@ -33,5 +33,5 @@ class QRegMachine:
         synthesizer = DefaultSynthesizer()
         return synthesizer.synthesize(codelist)
     
-    def partial_evaluation(self, text):
+    def partial_evaluate(self, text):
         pass
