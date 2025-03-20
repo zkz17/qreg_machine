@@ -4,6 +4,7 @@ from bitarray import bitarray, util
 class MachineCode:
     def __init__(self, code_length=20):
         self.code = bitarray(code_length)
+        self.imm_length = code_length - 9
 
     def set_opcode(self, opcode):
         self.code[:2] = util.int2ba(opcode, length=2)
@@ -39,7 +40,8 @@ class MachineCode:
         self.code[15:19] = util.int2ba(reg, length=4)
 
     def set_imm(self, imm):
-        self.code[10:] = util.int2ba(imm, length=10)
+        if imm < 0: imm += (1 << self.imm_length)
+        self.code[10:] = util.int2ba(imm, length=self.imm_length)
 
     def print(self):
         print(self.code.to01())
