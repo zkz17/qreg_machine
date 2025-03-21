@@ -1,8 +1,9 @@
 from bitarray import bitarray, util
+from config import COMPRESSED_CODE_LENGTH
 
 # Machine Code class
 class MachineCode:
-    def __init__(self, code_length=20):
+    def __init__(self, code_length=COMPRESSED_CODE_LENGTH):
         self.code = bitarray(code_length)
         self.imm_length = code_length - 9
 
@@ -48,7 +49,7 @@ class MachineCode:
 
 # Machine Code List class
 class MachineCodeList:
-    def __init__(self, code_length=19):
+    def __init__(self, code_length=COMPRESSED_CODE_LENGTH):
         self.code_length = code_length
         self.codelist = []
 

@@ -29,11 +29,9 @@ class CompressedAssembler(Assembler):
     def __init__(self):
         pass
 
-    def assemble(self, text):
+    def assemble(self, instlist):
         codelist = MachineCodeList()
-        for line in text:
-            lst = re.split("\(|, |\)", line.rstrip(")\n"))
-            op, args = lst[0], lst[1:]
+        for op, args in instlist:
             for type, oplist in CompressedAssembler.optype.items():
                 if op in oplist:
                     method_name = f'assemble_optype_{type}'

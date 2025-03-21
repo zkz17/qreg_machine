@@ -54,9 +54,16 @@ def main():
             text = f.readlines()
             f.close()
 
+            import re
+            instlist = []
+            for line in text:
+                lst = re.split("\(|, |\)", line.rstrip(")\n"))
+                op, args = lst[0], lst[1:]
+                instlist.append((op, args))
+
             from qreg_machine import QRegMachine
             qreg_machine = QRegMachine()
-            qreg_machine.execute(text)
+            qreg_machine.execute(instlist)
 
 if __name__ == "__main__":
     main()

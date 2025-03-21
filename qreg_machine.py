@@ -1,20 +1,23 @@
+from config import PRACTICAL_RUNNING_TIME
+
 # Quantum Register Machine class
 class QRegMachine:
     def __init__(self):
         pass
 
-    def execute(self, text):
-        self.partial_evaluate(text)
+    def execute(self, instlist):
+        qif_table = self.partial_evaluate(instlist)
 
-        codelist = self.assemble(text)
+        codelist = self.assemble(instlist)
         codelist.print()
 
         oracle = self.synthesize(codelist)
         #with open('circuit.txt', 'w', encoding='utf-8') as f:
         #    f.write(oracle.draw(output='text').single_string())
+
         ## TODO
         
-    def assemble(self, text, compress=True):
+    def assemble(self, instlist, compress=True):
         assembler = None
         if compress:
             from assembler.compressed_assembler import CompressedAssembler
@@ -23,7 +26,7 @@ class QRegMachine:
             from assembler.generic_assembler import GenericAssembler
             assembler = GenericAssembler()
 
-        codelist = assembler.assemble(text)
+        codelist = assembler.assemble(instlist)
 
         return codelist
 
@@ -33,5 +36,12 @@ class QRegMachine:
         synthesizer = DefaultSynthesizer()
         return synthesizer.synthesize(codelist)
     
-    def partial_evaluate(self, text):
-        pass
+    def partial_evaluate(self, instlist):
+        from utils.qif_flow import QifFlow
+        qif_table = QifFlow()
+
+        for t in range(PRACTICAL_RUNNING_TIME):
+            finished = qif_table.execute(instlist)
+            if qif_table.terminated(): return qif_table
+
+        raise Exception(r'Execution time out!!!')
