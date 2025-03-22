@@ -16,7 +16,6 @@ class QifFlow:
                 self.r6   = 0
                 self.r7   = 0
                 self.r8   = 0
-                self.stack= []
                 self.mem  = {}
             else:
                 self.setall(regs)
@@ -34,10 +33,7 @@ class QifFlow:
             self.r6   = regs.r6
             self.r7   = regs.r7
             self.r8   = regs.r8
-            self.stack= []
             self.mem  = {}
-            for item in regs.stack:
-                self.stack.append(item)
             for addr, value in regs.mem.items():
                 self.mem[addr] = value
 
