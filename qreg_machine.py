@@ -6,7 +6,7 @@ class QRegMachine:
         pass
 
     def execute(self, instlist):
-        qif_table = self.partial_evaluate(instlist)
+        qif_table, execution_time = self.partial_evaluate(instlist)
 
         codelist = self.assemble(instlist)
         codelist.print()
@@ -41,7 +41,7 @@ class QRegMachine:
         qif_table = QifFlow()
 
         for t in range(PRACTICAL_RUNNING_TIME):
-            finished = qif_table.execute(instlist)
-            if qif_table.terminated(): return qif_table
+            qif_table.execute(instlist)
+            if qif_table.terminated(): return qif_table, t + 1
 
         raise Exception(r'Execution time out!!!')

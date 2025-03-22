@@ -57,7 +57,7 @@ def main():
             import re
             instlist = []
             for line in text:
-                lst = re.split("\(|, |\)", line.rstrip(")\n"))
+                lst = re.split("\\(|, |\\)", line.rstrip(")\n"))
                 op, args = lst[0], lst[1:]
                 instlist.append((op, args))
 
