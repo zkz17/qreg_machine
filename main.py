@@ -14,6 +14,9 @@ def main():
         option = args[1]
         if option == "help":
             print(help_info)
+        elif option == "config":
+            from config import print_config
+            print_config()
         elif option == "compile":
             if len(args) == 2:
                 raise Exception(r'Input file path missing. ')
