@@ -45,6 +45,9 @@ def main():
             code = compile(text, False)
             code.print()
             code.write(output_path)
+        elif option == "test":
+            from tests.qram import test_bbqram
+            test_bbqram()
         elif option == "execute":
             if len(args) == 2:
                 raise Exception(r'Input file path missing. ')

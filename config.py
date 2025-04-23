@@ -28,7 +28,9 @@ USRREG_NAME = [f'r{i}' for i in range(USRREG_NUM)]
 
 ADDRESSABLE_REG_ONLY = False
 REGSEC_LENGTH = len(bin(USRREG_NUM - 1 + (SYSREG_NUM_ADDRESSABLE if ADDRESSABLE_REG_ONLY else SYSREG_NUM))[2:])
-# Compressed Assembler
+
+## Compressed Assembler
+
 OPCODE_LENGTH_COMPRESSED  = 2
 OPCODEI_LENGTH_COMPRESSED = GATE1_LENGTH_COMPRESSED = 4
 OPCODER_LENGTH_COMPRESSED = GATE2_LENGTH_COMPRESSED = OP1_LENGTH_COMPRESSED = OP2_LENGTH_COMPRESSED = 5
@@ -55,6 +57,13 @@ IMM_END_COMPRESSED   = IMM_START_COMPRESSED + IMMSEC_LENGTH_COMPRESSED
 
 COMPRESSED_CODE_LENGTH = OPCODE_LENGTH_COMPRESSED + max(OPCODEI_LENGTH_COMPRESSED + REGSEC_LENGTH + IMMSEC_LENGTH_COMPRESSED, OP2_LENGTH_COMPRESSED + 3 * REGSEC_LENGTH)
 
+# configuration setter
+def set_config(varname, val):
+    if varname not in globals():
+        print(f'Attempting to set non-exist config {varname}')
+
+    globals()[varname] = val
+
 # configuration printer
 def print_config():
     import inspect
@@ -66,4 +75,5 @@ def print_config():
     for name, value in globals().items():
         if name.startswith('_'): continue
         if name == 'print_config': continue
+        if name == 'set_config': continue
         print(f"{name}: {value}")

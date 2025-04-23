@@ -6,7 +6,7 @@ class QRAM(ABC):
         pass
 
     @abstractmethod
-    def swap_load(self, target_reg, addr_reg):
+    def load(self, target_reg, addr_reg):
         pass
 
     @abstractmethod
