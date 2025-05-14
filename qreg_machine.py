@@ -23,6 +23,8 @@ class QRegMachine:
         self.circ.add_register(self.wait)
         self.circ.add_register(self.sp)
 
+        self.ufet = None
+
     def execute(self, instlist):
         # Partial Evaluation. 
         qif_table, execution_time = self.partial_evaluate(instlist)
@@ -33,9 +35,9 @@ class QRegMachine:
         codelist = self.assemble(instlist)
         codelist.print()
 
-        oracle = self.synthesize(codelist)
+        self.synthesize_ufet(codelist)
         #with open('circuit.txt', 'w', encoding='utf-8') as f:
-        #    f.write(oracle.draw(output='text').single_string())
+        #    f.write(ufet.draw(output='text').single_string())
 
         # Execution. 
         for t in range(execution_time):
@@ -63,12 +65,15 @@ class QRegMachine:
         codelist = assembler.assemble(instlist)
 
         return codelist
+    
+    def apply_ufet(self):
+        self.circ.compose(self.ufet, qubits=self.pc[:]+self.ins[:], inplace=True)
 
-    def synthesize(self, codelist):
+    def synthesize_ufet(self, codelist):
         from oracle_synthesizer.default_synthesizer import DefaultSynthesizer
 
         synthesizer = DefaultSynthesizer()
-        return synthesizer.synthesize(codelist)
+        self.ufet = synthesizer.synthesize(codelist)
     
     def partial_evaluate(self, instlist):
         from utils.qif_flow import QifFlow
@@ -84,6 +89,9 @@ class QRegMachine:
         from qram.bbqram import BucketBrigadeQRAM
         mem = BucketBrigadeQRAM(self.circ)
         return mem
+    
+    def execute_or_wait(self):
+        pass
     
     def clear_wait_flag(self):
         self.set_wait_flag()

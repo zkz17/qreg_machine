@@ -6,5 +6,5 @@ class Synthesizer(ABC):
         pass
 
     @abstractmethod
-    def synthesize(self, code):
+    def synthesize(self, codelist):
         pass

@@ -1,17 +1,18 @@
 from oracle_synthesizer.synthesizer import Synthesizer
+from config import *
 from qiskit import QuantumCircuit, QuantumRegister
 from bitarray import util
 
 # Default Oracle Synthesizer
 class DefaultSynthesizer(Synthesizer):
     def __init__(self):
-        self.pc_numqubit = 10
-        self.ins_numqubit = 20
+        self.pc_numqubit = WORD_LENGTH
+        self.ins_numqubit = COMPRESSED_CODE_LENGTH
 
     # Apply a cascade of multi-controlled Toffoli gates. 
     def synthesize(self, codelist):
-        pc = QuantumRegister(self.pc_numqubit, name='pc')
-        ins = QuantumRegister(self.ins_numqubit, name='ins')
+        pc = QuantumRegister(self.pc_numqubit, name=SYSREG_NAME_PC)
+        ins = QuantumRegister(self.ins_numqubit, name=SYSREG_NAME_INS)
         circuit = QuantumCircuit(pc, ins)
 
         line = 0
