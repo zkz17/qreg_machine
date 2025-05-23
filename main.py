@@ -46,6 +46,9 @@ def main():
             code.print()
             code.write(output_path)
         elif option == "test":
+            from tests.rev_circuit import test_all
+            test_all()
+
             from tests.qram import test_bbqram
             test_bbqram()
         elif option == "execute":

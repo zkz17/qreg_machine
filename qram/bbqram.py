@@ -12,6 +12,12 @@ class MemCell:
         self.reg = QuantumRegister(WORD_LENGTH, f'mem_cell_{self.pos}')
         self.circ.add_register(self.reg)
 
+    def connect_circuit(self, circuit):
+        self.circ = circuit
+
+    def insert_register(self, circuit):
+        circuit.add_register(self.reg)
+
     def controlled_swap(self, target_reg):
         for i in range(WORD_LENGTH):
             self.circ.cswap(self.control, self.reg[i], target_reg[i])
@@ -36,6 +42,16 @@ class Router:
         self.circ.add_register(self.reg)
 
         self.lc = self.rc = None
+
+    def connect_circuit(self, circuit):
+        self.circ = circuit
+        self.lc.connect_circuit(circuit)
+        self.rc.connect_circuit(circuit)
+
+    def insert_register(self, circuit):
+        circuit.add_register(self.reg)
+        self.lc.insert_register(circuit)
+        self.rc.insert_register(circuit)
 
     def connect_mem_cell(self):
         self.lc = MemCell(self.circ, pos=(self.pos<<1), control=self.left)
@@ -125,6 +141,16 @@ class BucketBrigadeQRAM(QRAM):
 
         self.root = Router(self.circ)
         self.memcells = self.root.create_children(self.depth - 1)
+
+    def connect_circuit(self, circuit):
+        self.insert_register(circuit)
+        self.circ = circuit
+        self.root.connect_circuit(circuit)
+
+    def insert_register(self, circuit):
+        if not circuit.has_register(self.top):
+            circuit.add_register(self.top)
+            self.root.insert_register(circuit)
 
     def load(self, target_reg, addr_reg):
         self.load_address(addr_reg)

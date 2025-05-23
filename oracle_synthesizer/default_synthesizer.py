@@ -13,7 +13,7 @@ class DefaultSynthesizer(Synthesizer):
     def synthesize(self, codelist):
         pc = QuantumRegister(self.pc_numqubit, name=SYSREG_NAME_PC)
         ins = QuantumRegister(self.ins_numqubit, name=SYSREG_NAME_INS)
-        circuit = QuantumCircuit(pc, ins)
+        circuit = QuantumCircuit(pc, ins, name='Ufet')
 
         line = 0
         for code in codelist.codelist:

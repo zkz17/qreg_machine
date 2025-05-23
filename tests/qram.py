@@ -17,6 +17,6 @@ def test_bbqram():
     mem = BucketBrigadeQRAM(circ)
     mem.load(tgt1, addr)
     
-    with open('circuit.txt', 'w', encoding='utf-8') as f:
+    with open('test_bbqram.txt', 'w', encoding='utf-8') as f:
         f.write(circ.draw(output='text').single_string())
 
