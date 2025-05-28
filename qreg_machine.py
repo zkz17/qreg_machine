@@ -14,7 +14,9 @@ class QRegMachine:
         self.wait = QuantumRegister(1                     , SYSREG_NAME_WAIT)
         self.sp   = QuantumRegister(WORD_LENGTH           , SYSREG_NAME_SP  )
 
-        self.circ = QuantumCircuit()
+        self.circ      = QuantumCircuit()
+        self.mem_load  = QuantumCircuit()
+        self.mem_fetch = QuantumCircuit()
 
         self.mem = self.mem_init()
         self.mem_regs = self.circ.qregs.copy()
@@ -160,5 +162,23 @@ class QRegMachine:
 
     def mem_init(self):
         from qram.bbqram import BucketBrigadeQRAM
-        return BucketBrigadeQRAM(self.circ)
+        mem = BucketBrigadeQRAM()
+
+        tgt = QuantumRegister(WORD_LENGTH, 'target_reg')
+        addr = QuantumRegister(WORD_LENGTH, 'address_reg')
+        self.mem_load.add_register(tgt, addr)
+        mem.connect_circuit(self.mem_load)
+        mem.load(tgt, addr)
+
+        self.mem_fetch.add_register(tgt, addr)
+        mem.connect_circuit(self.mem_fetch)
+        mem.fetch(tgt, addr)
+
+        #with open('mem_load.txt', 'w', encoding='utf-8') as f:
+        #    f.write(self.mem_load.draw(output='text').single_string())
+        #with open('mem_fetch.txt', 'w', encoding='utf-8') as f:
+        #    f.write(self.mem_fetch.draw(output='text').single_string())
+
+        mem.connect_circuit(self.circ)
+        return mem
     

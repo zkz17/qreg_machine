@@ -1,5 +1,5 @@
 from qram.qram import QRAM
-from qiskit import QuantumRegister
+from qiskit import QuantumRegister, QuantumCircuit
 from config import MEM_SIZE, WORD_LENGTH
 
 # Memory Cell class
@@ -127,14 +127,14 @@ class Router:
 # Bucket-Brigade QRAM class
 class BucketBrigadeQRAM(QRAM):
     # Giovannetti, V., Lloyd, S., & Maccone, L. (2008). Quantum random access memory. Physical review letters, 100(16), 160501.
-    def __init__(self, circuit):
+    def __init__(self):
         self.depth = 1
         self.size = 2
         while self.size < MEM_SIZE:
             self.depth += 1
             self.size <<= 1
 
-        self.circ = circuit
+        self.circ = QuantumCircuit()
         self.top = QuantumRegister(1, 'router_root')
         self.circ.add_register(self.top)
         self.circ.x(self.top[0])
