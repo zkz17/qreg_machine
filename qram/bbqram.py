@@ -4,12 +4,12 @@ from config import MEM_SIZE, WORD_LENGTH
 
 # Memory Cell class
 class MemCell:
-    def __init__(self, circuit, pos=0, control=None):
+    def __init__(self, circuit, pos=0, control=None, name=None):
         self.pos = pos
         self.control = control
         self.circ = circuit
 
-        self.reg = QuantumRegister(WORD_LENGTH, f'mem_cell_{self.pos}')
+        self.reg = QuantumRegister(WORD_LENGTH, name if name else f'mem_cell_{self.pos}')
         self.circ.add_register(self.reg)
 
     def connect_circuit(self, circuit):
@@ -53,20 +53,20 @@ class Router:
         self.lc.insert_register(circuit)
         self.rc.insert_register(circuit)
 
-    def connect_mem_cell(self):
-        self.lc = MemCell(self.circ, pos=(self.pos<<1), control=self.left)
-        self.rc = MemCell(self.circ, pos=(self.pos<<1)+1, control=self.right)
+    def connect_mem_cell(self, names=[]):
+        self.lc = MemCell(self.circ, pos=(self.pos<<1), control=self.left, name=(names[0] if len(names) else None))
+        self.rc = MemCell(self.circ, pos=(self.pos<<1)+1, control=self.right, name=(names[1] if len(names) else None))
         return [self.lc, self.rc]
 
-    def create_children(self, depth):
+    def create_children(self, depth, names=[]):
         if depth:
             self.lc = Router(self.circ, id=(self.id<<1), pos=(self.pos<<1), incoming=self.left)
             self.rc = Router(self.circ, id=(self.id<<1)+1, pos=(self.pos<<1)+1, incoming=self.right)
-            llst = self.lc.create_children(depth - 1)
-            rlst = self.rc.create_children(depth - 1)
+            llst = self.lc.create_children(depth - 1, names=names[:(len(names)/2)])
+            rlst = self.rc.create_children(depth - 1, names=names[(len(names)/2):])
             return llst + rlst
         else:
-            return self.connect_mem_cell()
+            return self.connect_mem_cell(names)
 
     def set_incoming(self, incoming):
         self.input = incoming
